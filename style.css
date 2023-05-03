@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 606px;
+    background-color: #404258;
+}
+
+.modes {
+    display: flex;
+    width: 5rem;
+    height: 2rem;
+    background-color: #474E68;
+    border-radius: .7rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+img {
+    width: 1.2rem;
+    height: auto;
+}
+
+.active {
+    filter: invert(1);
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
