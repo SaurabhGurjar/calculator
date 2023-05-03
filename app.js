@@ -6,6 +6,8 @@ const credit = document.querySelector('.credit');
 const buttonColor = document.querySelectorAll('.btn');
 const buttonsBg = document.querySelector('.btn-container');
 const containerBg = document.querySelector('.container');
+const displayEq = document.querySelector('.big'); // Current equation entered
+const displayEv = document.querySelector('.small'); // Evaluated result
 
 
 
@@ -38,6 +40,8 @@ function changeColor() {
     credit.classList.toggle('day');
     containerBg.classList.toggle('day');
     buttonsBg.classList.toggle('day');
+    displayEq.classList.toggle('day');
+    displayEv.classList.toggle('day');
 }
 
 day.addEventListener('click', changeColor);
