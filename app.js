@@ -1,5 +1,12 @@
 const day = document.querySelector('#day');
 const night = document.querySelector('#night');
+const mode = document.querySelector('.modes');
+const bodyColor = document.querySelector('body');
+const credit = document.querySelector('.credit');
+const buttonColor = document.querySelectorAll('.btn');
+const buttonsBg = document.querySelector('.btn-container');
+const containerBg = document.querySelector('.container');
+
 
 
 function add(num1, num2) {
@@ -25,6 +32,12 @@ function percentage(num1, percent) {
 function changeColor() {
     day.classList.toggle('active');
     night.classList.toggle('active');
+    buttonColor.forEach((btn) => btn.classList.toggle('day'));
+    mode.classList.toggle('day');
+    bodyColor.classList.toggle('day');
+    credit.classList.toggle('day');
+    containerBg.classList.toggle('day');
+    buttonsBg.classList.toggle('day');
 }
 
 day.addEventListener('click', changeColor);
