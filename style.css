@@ -8,6 +8,7 @@ body {
     height: 100vh;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 .container {
     display: flex;
@@ -19,8 +20,7 @@ body {
     margin: 0 auto;
     padding: .8rem .5rem 0 .5rem;
     background-color: #0C0E0C;
-    border-radius: 2.5rem;
-    overflow: hidden;
+    border-radius: .5rem;
 }
 
 .modes {
