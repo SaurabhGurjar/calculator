@@ -1,9 +1,25 @@
-
 const equation = {
-    firstNumber: 0,
-    operator: null,
-    secondNumber: 0,
+    firstNumber: '',
+    operator: '',
+    secondNumber: '',
+    result: '',
+    add() {
+        return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber));
+    },
+    subtract() {
+        return (parseFloat(this.firstNumber) - parseFloat(this.secondNumber));
+    },
+    multiply() {
+        return (parseFloat(this.firstNumber) * parseFloat(this.secondNumber)).toFixed(6);
+    },
+    divide() {
+        return (parseFloat(this.firstNumber) / parseFloat(this.secondNumber)).toFixed(4);
+    },
+    percentage() {
+        return ((parseFloat(this.firstNumber) * parseFloat(this.secondNumber)) / 100);
+    },
 };
+
 let operatorCounter = 0;
 let operator;
 
@@ -20,27 +36,7 @@ const displayBig = document.querySelector('.big'); // Current equation entered
 const displaySmall = document.querySelector('.small'); // Evaluated result
 
 
-function add(num1, num2) {
-    return Number((num1 + num2).toFixed(2));
-}
-
-function subtract(num1, num2) {
-    return Number((num1 - num2).toFixed(2));
-}
-
-function multiply(num1, num2) {
-    return Number((num1 * num2).toFixed(3));
-}
-
-function divide(num1, num2) {
-    return Number((num1 / num2).toFixed(2));
-}
-
-function percentage(num1, percent) {
-    return Number(((num1 * percent) / 100).toFixed(2));
-}
-
-function changeColor() {
+function changeMode() {
     day.classList.toggle('active');
     night.classList.toggle('active');
     buttons.forEach((btn) => btn.classList.toggle('day'));
@@ -53,46 +49,50 @@ function changeColor() {
     displaySmall.classList.toggle('day');
 }
 
+// Show Calculation
 function showInput(e) {
     if (checkOperators.includes(e.target.id) || e.target.id) {
         displayBig.textContent += `${e.target.id}`;
     }
 }
-
 function showResult() {
-        displaySmall.textContent = `${equation.firstNumber} ${equation.operator} ${equation.secondNumber}`;
+    if (equation.firstNumber && equation.result && equation.secondNumber) {
+        displaySmall.textContent = `${equation.firstNumber} ${equation.operator} ${equation.secondNumber}`
+    }
+
+    if (equation.result) {
+        displayBig.textContent = equation.result;
+    }
 }
 
+
+// Clear display
 function clearAll() {
     displayBig.textContent = '';
     displaySmall.textContent = '';
-    equation.firstNumber = 0;
-    equation.secondNumber = 0;
-    equation.operator = null;
+    equation.firstNumber = '';
+    equation.secondNumber = '';
+    equation.operator = '';
+    equation.result = '';
 }
-
 function backspace() {
     const equation = displayBig.textContent;
     displayBig.textContent = equation.slice(0, equation.length - 1);
 }
 
-const digits = [];
+// Get user input
 function getInput(e) {
     // Since the value of 0 is false so we add 1 to make the condition true
     if ((Number(e.target.id) + 1 || e.target.id === '.') && !equation.operator) {
-        digits.push(e.target.id);
-        equation.firstNumber = parseFloat(digits.join(''));
+        equation.firstNumber += e.target.id;
         showInput(e);
     }
     else if (checkOperators.includes(e.target.id)) {
         equation.operator = e.target.id;
-        digits.length = 0;
         showInput(e);
-
     }
     else if ((Number(e.target.id) + 1 || e.target.id === '.') && equation.operator) {
-        digits.push(e.target.id);
-        equation.secondNumber = parseFloat(digits.join(''));
+        equation.secondNumber += e.target.id;
         showInput(e);
     }
     else if (e.target.id === 'ac') {
@@ -105,32 +105,34 @@ function getInput(e) {
             displayBig.textContent = value.split(' ').join('');
         } else backspace();
     }
-    console.log(equation.firstNumber, equation.operator, equation.secondNumber);
-    if (e.target.id === '=') {
-        displayBig.textContent = operate();
-        digits.length = 0;
+    else if (e.target.id === '=') {
+        if (!equation.operator) return
+        equation.result = operate();
+        displayBig.textContent = equation.result;
         showResult();
-    }
+        equation.firstNumber = equation.result;
+        equation.operator = '';
+        equation.secondNumber = '';
+    } else showResult();
+    console.log(equation.firstNumber, equation.operator, equation.secondNumber);
 }
 
+// Call functions
 function operate() {
     switch (equation.operator) {
         case '+':
-            return add(equation.firstNumber, equation.secondNumber);
+            return equation.add();
         case '-':
-            displayBig.textContent = subtract(equation.firstNumber, equation.secondNumber);
-            break;
+            return equation.subtract();
         case 'x':
-            displayBig.textContent = multiply(equation.firstNumber, equation.secondNumber);
-            break;
+            return equation.multiply();
         case '/':
-            displayBig.textContent = divide(equation.firstNumber, equation.secondNumber);
-            break;
+            return equation.divide();
         case '%':
-            displayBig.textContent = percentage(equation.firstNumber, equation.secondNumber);
+            return equation.percentage();
     }
 }
 
-day.addEventListener('click', changeColor);
-night.addEventListener('click', changeColor);
+day.addEventListener('click', changeMode);
+night.addEventListener('click', changeMode);
 buttons.forEach((btn) => btn.addEventListener('click', getInput));
