@@ -95,7 +95,10 @@ function getInput(input) {
             equation.operator = '';
         }
         
-    } else if (input === 'ans') showResult();
+    } else if (input === 'ans') {
+        equation.firstNumber = equation.result;
+        showResult();
+    }
     
     if (input === equation.operator) return
     if ((Number(input) + 1 || input === '.') && !equation.operator) {
@@ -126,11 +129,7 @@ function getInput(input) {
         clearAll();
     }
     else if (input === 'c' || input === 'Backspace') {
-        if (!displayBig.textContent && displaySmall) {
-            const value = displaySmall.textContent;
-            displaySmall.textContent = '';
-            displayBig.textContent = value.split(' ').join('');
-        } else backspace();
+        backspace();
     }
     console.log(equation.firstNumber, equation.operator, equation.secondNumber);
 }
@@ -160,7 +159,6 @@ buttons.forEach((btn) => btn.addEventListener('click', (e) => {
 }));
 document.addEventListener('keydown', (e) => {
     if (Number(e.key) || e.key === 'Backspace' || e.key === 'Enter' || checkOperators.includes(e.key)) {
-        console.log(e.key);
         getInput(e.key);
     }
 });
