@@ -6,24 +6,21 @@ const equation = {
     isSecondFloat: false,
     result: '',
     add() {
-        return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber));
+        return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber)).toString();
     },
     subtract() {
-        return (parseFloat(this.firstNumber) - parseFloat(this.secondNumber));
+        return (parseFloat(this.firstNumber) - parseFloat(this.secondNumber)).toString();
     },
     multiply() {
-        return (parseFloat(this.firstNumber) * parseFloat(this.secondNumber)).toFixed(6);
+        return (parseFloat(this.firstNumber) * parseFloat(this.secondNumber)).toFixed(2);
     },
     divide() {
-        return (parseFloat(this.firstNumber) / parseFloat(this.secondNumber)).toFixed(4);
+        return (parseFloat(this.firstNumber) / parseFloat(this.secondNumber)).toFixed(2);
     },
     percentage() {
-        return ((parseFloat(this.firstNumber) * parseFloat(this.secondNumber)) / 100);
+        return ((parseFloat(this.firstNumber) * parseFloat(this.secondNumber)) / 100).toString();
     },
 };
-
-let operatorCounter = 0;
-let operator;
 
 const checkOperators = ['-', 'x', '/', '+', '%'];
 const day = document.querySelector('#day');
@@ -54,14 +51,13 @@ function changeMode() {
 // Show Calculation
 function showInput(e) {
     if (checkOperators.includes(e.target.id) || e.target.id) {
-        displayBig.textContent += `${e.target.id}`;
+        displayBig.textContent = `${equation.firstNumber} ${equation.operator} ${equation.secondNumber}`;
     }
 }
 function showResult() {
     if (equation.firstNumber && equation.result && equation.secondNumber) {
         displaySmall.textContent = `${equation.firstNumber} ${equation.operator} ${equation.secondNumber}`
     }
-
     if (equation.result) {
         displayBig.textContent = equation.result;
     }
@@ -78,14 +74,29 @@ function clearAll() {
     equation.result = '';
 }
 function backspace() {
-    const equation = displayBig.textContent;
-    displayBig.textContent = equation.slice(0, equation.length - 1);
+    if (equation.secondNumber) equation.secondNumber = equation.secondNumber.slice(0, equation.secondNumber.length - 1);
+    else if (equation.operator) equation.operator = '';
+    else if (equation.firstNumber) equation.firstNumber = equation.firstNumber.slice(0, equation.firstNumber.length - 1);
+    displayBig.textContent = `${equation.firstNumber}${equation.operator}${equation.secondNumber}`;
 }
 
 // Get user input
 function getInput(e) {
     if (e.target.id === equation.operator) return
     // Since the value of 0 is false so we add 1 to make the condition true
+
+    if (e.target.id === '=' || checkOperators.includes(e.target.id)) {
+        if (equation.operator && equation.firstNumber && equation.secondNumber) {
+            displayBig.textContent = equation.result;
+            equation.result = operate();
+            showResult();
+            equation.firstNumber = equation.result;
+            equation.secondNumber = '';
+            equation.operator = '';
+        }
+
+    } else if (e.target.id === 'ans') showResult();
+
     if ((Number(e.target.id) + 1 || e.target.id === '.') && !equation.operator) {
         if (!equation.isFristFloat && e.target.id === '.') {
             equation.isFristFloat = true;
@@ -104,7 +115,7 @@ function getInput(e) {
         if (!equation.isSecondFloat && e.target.id === '.') {
             equation.isSecondFloat = true;
             equation.secondNumber += e.target.id;
-            showInput(e); 
+            showInput(e);
         } else if (e.target.id !== '.') {
             equation.secondNumber += e.target.id;
             showInput(e)
@@ -120,15 +131,6 @@ function getInput(e) {
             displayBig.textContent = value.split(' ').join('');
         } else backspace();
     }
-    else if (e.target.id === '=') {
-        if (!equation.operator || (!equation.firstNumber && !equation.secondNumber) || equation.firstNumber === '.' || equation.secondNumber === '.') return;
-        equation.result = operate();
-        displayBig.textContent = equation.result;
-        showResult();
-        equation.firstNumber = equation.result;
-        equation.operator = '';
-        equation.secondNumber = '';
-    } else showResult();
     console.log(equation.firstNumber, equation.operator, equation.secondNumber);
 }
 
@@ -145,6 +147,8 @@ function operate() {
             return equation.divide();
         case '%':
             return equation.percentage();
+        default:
+            return error;
     }
 }
 
