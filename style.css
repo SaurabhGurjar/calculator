@@ -154,4 +154,9 @@ body.day {
     border: .15rem solid coral;
 }
 
+/* Decrease displayBig font size */
+
+.smallFont {
+    font-size: 2rem;
+}
 

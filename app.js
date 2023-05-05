@@ -1,3 +1,5 @@
+const ALLOWEDLENGTH = 8;
+
 const equation = {
     firstNumber: '',
     operator: '',
@@ -5,8 +7,12 @@ const equation = {
     isFristFloat: false,
     isSecondFloat: false,
     result: '',
-    firstNumberLength: firstNumber.length,
-    secondNumberLength: secondNumber.length,
+    isFloat(num) {
+        return Number(num) === num && num % 1 !== 0;
+    },
+    len() {
+        return this.firstNumber.length + this.operator.length + this.secondNumber.length;
+    },
     add() {
         return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber)).toString();
     },
@@ -14,10 +20,16 @@ const equation = {
         return (parseFloat(this.firstNumber) - parseFloat(this.secondNumber)).toString();
     },
     multiply() {
-        return (parseFloat(this.firstNumber) * parseFloat(this.secondNumber)).toFixed(2);
+        const result = parseFloat(this.firstNumber) * parseFloat(this.secondNumber);
+        if (this.isFloat(result)) return result.toFixed(2);
+        else return result.toString();
+        
     },
     divide() {
-        return (parseFloat(this.firstNumber) / parseFloat(this.secondNumber)).toFixed(2);
+        const result = parseFloat(this.firstNumber) / parseFloat(this.secondNumber);
+        if (this.isFloat(result)) return result.toFixed(2);
+        else if (result.toString() === 'NaN') return 'error';
+        else return result.toString();
     },
     percentage() {
         if (Number(this.secondNumber) > 0 && Number(this.secondNumber) <= 100) {
@@ -27,7 +39,7 @@ const equation = {
 };
 
 let previousButton = document.getElementById('=');
-const checkOperators = ['-', 'x', '/', '+', '%'];
+const checkOperators = ['-', '*', '/', '+', '%'];
 const day = document.querySelector('#day');
 const night = document.querySelector('#night');
 const mode = document.querySelector('.modes');
@@ -86,12 +98,37 @@ function backspace() {
     displayBig.textContent = `${equation.firstNumber}${equation.operator}${equation.secondNumber}`;
 }
 
+function changeFontSize () {
+    if (equation.len() <= ALLOWEDLENGTH) displayBig.classList.remove('smallFont');
+    else displayBig.classList.add('smallFont');
+}
+
 // Get user input
 function getInput(input) {
+    // Change input value that come from keyboard(Enter and Backspace)
     if (input === 'Enter') input = '=';
     else if (input === 'Backspace') input = 'c';
+
     const currentButton = document.getElementById(input);
     previousButton.classList.remove('pressed');
+
+    // Change the font of displayed number on displayBig
+    changeFontSize();
+
+    // Backspace and Clear Screen
+    if (input === 'ac') {
+        currentButton.classList.add('pressed');
+        clearAll();
+    }
+    if (input === 'c' || input === 'Backspace') {
+        currentButton.classList.add('pressed');
+        backspace();
+    }
+
+    // Input Limit
+    if (equation.len() > ALLOWEDLENGTH * 2) return;
+   
+
     if (input === '=' || checkOperators.includes(input) || input === 'Enter') {
         if (equation.operator && equation.firstNumber && equation.secondNumber) {
             displayBig.textContent = equation.result;
@@ -139,14 +176,6 @@ function getInput(input) {
             showInput(input)
         }
     }
-    else if (input === 'ac') {
-        currentButton.classList.add('pressed');
-        clearAll();
-    }
-    else if (input === 'c' || input === 'Backspace') {
-        currentButton.classList.add('pressed');
-        backspace();
-    }
     previousButton = document.getElementById(input);
 }
 
@@ -157,14 +186,14 @@ function operate() {
             return equation.add();
         case '-':
             return equation.subtract();
-        case 'x':
+        case '*':
             return equation.multiply();
         case '/':
             return equation.divide();
         case '%':
             return equation.percentage();
         default:
-            return error;
+            return 'error';
     }
 }
 
@@ -174,7 +203,7 @@ buttons.forEach((btn) => btn.addEventListener('click', (e) => {
     getInput(e.target.id);
 }));
 document.addEventListener('keydown', (e) => {
-    if (Number(e.key) || e.key === 'Backspace' || e.key === 'Enter' || checkOperators.includes(e.key)) {
+    if (Number(e.key) + 1 || e.key === 'Backspace' || e.key === 'Enter' || checkOperators.includes(e.key) || e.key === '.') {
         getInput(e.key);
     }
 });
