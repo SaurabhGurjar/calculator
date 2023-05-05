@@ -2,6 +2,8 @@ const equation = {
     firstNumber: '',
     operator: '',
     secondNumber: '',
+    isFristFloat: false,
+    isSecondFloat: false,
     result: '',
     add() {
         return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber));
@@ -82,19 +84,31 @@ function backspace() {
 
 // Get user input
 function getInput(e) {
-    if (e.target.id === equation.operator ) return
+    if (e.target.id === equation.operator) return
     // Since the value of 0 is false so we add 1 to make the condition true
     if ((Number(e.target.id) + 1 || e.target.id === '.') && !equation.operator) {
-        equation.firstNumber += e.target.id;
-        showInput(e);
+        if (!equation.isFristFloat && e.target.id === '.') {
+            equation.isFristFloat = true;
+            equation.firstNumber += e.target.id;
+            showInput(e);
+        } else if (e.target.id !== '.') {
+            equation.firstNumber += e.target.id;
+            showInput(e);
+        }
     }
     else if (checkOperators.includes(e.target.id)) {
         equation.operator = e.target.id;
         showInput(e);
     }
     else if ((Number(e.target.id) + 1 || e.target.id === '.') && equation.operator) {
-        equation.secondNumber += e.target.id;
-        showInput(e);
+        if (!equation.isSecondFloat && e.target.id === '.') {
+            equation.isSecondFloat = true;
+            equation.secondNumber += e.target.id;
+            showInput(e); 
+        } else if (e.target.id !== '.') {
+            equation.secondNumber += e.target.id;
+            showInput(e)
+        }
     }
     else if (e.target.id === 'ac') {
         clearAll();
