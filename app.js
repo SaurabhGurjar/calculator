@@ -22,6 +22,7 @@ const equation = {
     },
 };
 
+
 const checkOperators = ['-', 'x', '/', '+', '%'];
 const day = document.querySelector('#day');
 const night = document.querySelector('#night');
@@ -49,8 +50,8 @@ function changeMode() {
 }
 
 // Show Calculation
-function showInput(e) {
-    if (checkOperators.includes(e.target.id) || e.target.id) {
+function showInput(input) {
+    if (checkOperators.includes(input) || input) {
         displayBig.textContent = `${equation.firstNumber} ${equation.operator} ${equation.secondNumber}`;
     }
 }
@@ -81,11 +82,10 @@ function backspace() {
 }
 
 // Get user input
-function getInput(e) {
-    if (e.target.id === equation.operator) return
+function getInput(input) {
     // Since the value of 0 is false so we add 1 to make the condition true
-
-    if (e.target.id === '=' || checkOperators.includes(e.target.id)) {
+    
+    if (input === '=' || checkOperators.includes(input) || input === 'Enter') {
         if (equation.operator && equation.firstNumber && equation.secondNumber) {
             displayBig.textContent = equation.result;
             equation.result = operate();
@@ -94,37 +94,38 @@ function getInput(e) {
             equation.secondNumber = '';
             equation.operator = '';
         }
-
-    } else if (e.target.id === 'ans') showResult();
-
-    if ((Number(e.target.id) + 1 || e.target.id === '.') && !equation.operator) {
-        if (!equation.isFristFloat && e.target.id === '.') {
+        
+    } else if (input === 'ans') showResult();
+    
+    if (input === equation.operator) return
+    if ((Number(input) + 1 || input === '.') && !equation.operator) {
+        if (!equation.isFristFloat && input === '.') {
             equation.isFristFloat = true;
-            equation.firstNumber += e.target.id;
-            showInput(e);
-        } else if (e.target.id !== '.') {
-            equation.firstNumber += e.target.id;
-            showInput(e);
+            equation.firstNumber += input;
+            showInput(input);
+        } else if (input !== '.') {
+            equation.firstNumber += input;
+            showInput(input);
         }
     }
-    else if (checkOperators.includes(e.target.id)) {
-        equation.operator = e.target.id;
-        showInput(e);
+    else if (checkOperators.includes(input)) {
+        equation.operator = input;
+        showInput(input);
     }
-    else if ((Number(e.target.id) + 1 || e.target.id === '.') && equation.operator) {
-        if (!equation.isSecondFloat && e.target.id === '.') {
+    else if ((Number(input) + 1 || input === '.') && equation.operator) {
+        if (!equation.isSecondFloat && input === '.') {
             equation.isSecondFloat = true;
-            equation.secondNumber += e.target.id;
-            showInput(e);
-        } else if (e.target.id !== '.') {
-            equation.secondNumber += e.target.id;
-            showInput(e)
+            equation.secondNumber += input;
+            showInput(input);
+        } else if (input !== '.') {
+            equation.secondNumber += input;
+            showInput(input)
         }
     }
-    else if (e.target.id === 'ac') {
+    else if (input === 'ac') {
         clearAll();
     }
-    else if (e.target.id === 'c') {
+    else if (input === 'c' || input === 'Backspace') {
         if (!displayBig.textContent && displaySmall) {
             const value = displaySmall.textContent;
             displaySmall.textContent = '';
@@ -154,4 +155,12 @@ function operate() {
 
 day.addEventListener('click', changeMode);
 night.addEventListener('click', changeMode);
-buttons.forEach((btn) => btn.addEventListener('click', getInput));
+buttons.forEach((btn) => btn.addEventListener('click', (e) => {
+    getInput(e.target.id);
+}));
+document.addEventListener('keydown', (e) => {
+    if (Number(e.key) || e.key === 'Backspace' || e.key === 'Enter' || checkOperators.includes(e.key)) {
+        console.log(e.key);
+        getInput(e.key);
+    }
+});
