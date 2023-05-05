@@ -82,6 +82,7 @@ function backspace() {
 
 // Get user input
 function getInput(e) {
+    if (e.target.id === equation.operator ) return
     // Since the value of 0 is false so we add 1 to make the condition true
     if ((Number(e.target.id) + 1 || e.target.id === '.') && !equation.operator) {
         equation.firstNumber += e.target.id;
@@ -106,7 +107,7 @@ function getInput(e) {
         } else backspace();
     }
     else if (e.target.id === '=') {
-        if (!equation.operator) return
+        if (!equation.operator || (!equation.firstNumber && !equation.secondNumber) || equation.firstNumber === '.' || equation.secondNumber === '.') return;
         equation.result = operate();
         displayBig.textContent = equation.result;
         showResult();
