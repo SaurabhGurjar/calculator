@@ -37,9 +37,10 @@ const displaySmall = document.querySelector('.small'); // Evaluated result
 
 
 function changeMode() {
+
     day.classList.toggle('active');
     night.classList.toggle('active');
-    buttons.forEach((btn) => btn.classList.toggle('day'));
+    buttons.forEach((btn) => btn.classList.toggle('day')); 
     mode.classList.toggle('day');
     bodyColor.classList.toggle('day');
     credit.classList.toggle('day');
