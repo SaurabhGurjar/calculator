@@ -5,6 +5,8 @@ const equation = {
     isFristFloat: false,
     isSecondFloat: false,
     result: '',
+    firstNumberLength: firstNumber.length,
+    secondNumberLength: secondNumber.length,
     add() {
         return (parseFloat(this.firstNumber) + parseFloat(this.secondNumber)).toString();
     },
@@ -18,11 +20,13 @@ const equation = {
         return (parseFloat(this.firstNumber) / parseFloat(this.secondNumber)).toFixed(2);
     },
     percentage() {
-        return ((parseFloat(this.firstNumber) * parseFloat(this.secondNumber)) / 100).toString();
+        if (Number(this.secondNumber) > 0 && Number(this.secondNumber) <= 100) {
+            return ((parseFloat(this.firstNumber) * parseFloat(this.secondNumber)) / 100).toString();
+        } else return "error";
     },
 };
 
-
+let previousButton = document.getElementById('=');
 const checkOperators = ['-', 'x', '/', '+', '%'];
 const day = document.querySelector('#day');
 const night = document.querySelector('#night');
@@ -84,8 +88,10 @@ function backspace() {
 
 // Get user input
 function getInput(input) {
-    // Since the value of 0 is false so we add 1 to make the condition true
-    
+    if (input === 'Enter') input = '=';
+    else if (input === 'Backspace') input = 'c';
+    const currentButton = document.getElementById(input);
+    previousButton.classList.remove('pressed');
     if (input === '=' || checkOperators.includes(input) || input === 'Enter') {
         if (equation.operator && equation.firstNumber && equation.secondNumber) {
             displayBig.textContent = equation.result;
@@ -95,44 +101,53 @@ function getInput(input) {
             equation.secondNumber = '';
             equation.operator = '';
         }
-        
+        currentButton.classList.add('pressed');   
     } else if (input === 'ans') {
         equation.firstNumber = equation.result;
+        currentButton.classList.add('pressed');
         showResult();
     }
     
     if (input === equation.operator) return
+    // Since the value of 0 is false so we add 1 to make the condition true
     if ((Number(input) + 1 || input === '.') && !equation.operator) {
         if (!equation.isFristFloat && input === '.') {
             equation.isFristFloat = true;
             equation.firstNumber += input;
+            currentButton.classList.add('pressed');
             showInput(input);
         } else if (input !== '.') {
             equation.firstNumber += input;
+            currentButton.classList.add('pressed');
             showInput(input);
         }
     }
     else if (checkOperators.includes(input)) {
         equation.operator = input;
+        currentButton.classList.add('pressed');
         showInput(input);
     }
     else if ((Number(input) + 1 || input === '.') && equation.operator) {
         if (!equation.isSecondFloat && input === '.') {
             equation.isSecondFloat = true;
             equation.secondNumber += input;
+            currentButton.classList.add('pressed');
             showInput(input);
         } else if (input !== '.') {
             equation.secondNumber += input;
+            currentButton.classList.add('pressed');
             showInput(input)
         }
     }
     else if (input === 'ac') {
+        currentButton.classList.add('pressed');
         clearAll();
     }
     else if (input === 'c' || input === 'Backspace') {
+        currentButton.classList.add('pressed');
         backspace();
     }
-    console.log(equation.firstNumber, equation.operator, equation.secondNumber);
+    previousButton = document.getElementById(input);
 }
 
 // Call functions
