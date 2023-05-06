@@ -22,8 +22,7 @@ const equation = {
     multiply() {
         const result = parseFloat(this.firstNumber) * parseFloat(this.secondNumber);
         if (this.isFloat(result)) return result.toFixed(2);
-        else return result.toString();
-        
+        else return result.toString(); 
     },
     divide() {
         const result = parseFloat(this.firstNumber) / parseFloat(this.secondNumber);
@@ -39,7 +38,7 @@ const equation = {
 };
 
 let previousButton = document.getElementById('=');
-const checkOperators = ['-', '*', '/', '+', '%'];
+const checkOperators = ['-', 'x', '/', '+', '%', '*'];
 const day = document.querySelector('#day');
 const night = document.querySelector('#night');
 const mode = document.querySelector('.modes');
@@ -108,7 +107,8 @@ function getInput(input) {
     // Change input value that come from keyboard(Enter and Backspace)
     if (input === 'Enter') input = '=';
     else if (input === 'Backspace') input = 'c';
-
+    else if (input === '*') input = 'x';
+    console.log(input);
     const currentButton = document.getElementById(input);
     previousButton.classList.remove('pressed');
 
@@ -186,7 +186,7 @@ function operate() {
             return equation.add();
         case '-':
             return equation.subtract();
-        case '*':
+        case 'x':
             return equation.multiply();
         case '/':
             return equation.divide();
@@ -204,6 +204,7 @@ buttons.forEach((btn) => btn.addEventListener('click', (e) => {
 }));
 document.addEventListener('keydown', (e) => {
     if (Number(e.key) + 1 || e.key === 'Backspace' || e.key === 'Enter' || checkOperators.includes(e.key) || e.key === '.') {
+        console.log(e.key);
         getInput(e.key);
     }
 });
